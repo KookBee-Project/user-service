@@ -1,5 +1,7 @@
 package com.KookBee.userservice.domain.entity;
 
+import com.KookBee.userservice.domain.dto.ManagerDTO;
+import com.KookBee.userservice.domain.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,8 @@ public class Manager {
     @OneToMany(mappedBy = "manager",fetch = FetchType.LAZY)
     private List<ManagerCampus> managerCampusList;
 
-
-
+    public Manager(ManagerDTO dto) {
+        this.users = dto.getUsers();
+        this.company = dto.getCompany();
+    }
 }

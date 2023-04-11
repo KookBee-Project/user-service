@@ -21,4 +21,8 @@ public class ManagerCampus {
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
+    public ManagerCampus(Manager manager, Campus campus) {
+        this.manager = manager;
+        this.campus = campus;
+    }
 }
