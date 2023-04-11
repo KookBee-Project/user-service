@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bouncycastle.crypto.PasswordConverter;
+import org.springframework.data.domain.Auditable;
 
 @Entity
 @AllArgsConstructor
@@ -29,6 +31,7 @@ public class Users {
     private EStatus userStatus;
     @OneToOne(mappedBy = "users",fetch = FetchType.LAZY)
     private Manager manager;
+    private String saltCode;
 
     public Users(UserDTO dto) {
         this.userEmail = dto.getUserEmail();
