@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bouncycastle.crypto.PasswordConverter;
+import org.springframework.data.domain.Auditable;
 
 @Entity
 @AllArgsConstructor
@@ -21,5 +23,6 @@ public class Users {
     private String userPhoneNumber;
     private String userType;
     private String userStatus;
+    private String saltCode;
 
 }
