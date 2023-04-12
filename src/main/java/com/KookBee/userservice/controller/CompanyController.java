@@ -19,8 +19,8 @@ public class CompanyController {
     }
 
     @PostMapping("/companycode")
-    public Company findCompany (@RequestBody CompanyFindRequest request) {
-        Company companyByCompanyCode = companyService.findCompanyByCompanyCode(request);
+    public Long findCompany (@RequestBody CompanyFindRequest request) {
+        Long companyByCompanyCode = companyService.findCompanyByCompanyCode(request);
         return companyByCompanyCode;
 
     }

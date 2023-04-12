@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AdminController {
     private final UserService userService;
-    @PostMapping("/manager")
+    @PostMapping("/manager/signup")
     public String managerSignUp(@RequestBody ManagerSignUpRequest request) throws EmailCheckException {
-        userService.managerSignUp(request);
-        return "성공";
+        return userService.managerSignUp(request);
+
     }
-    @PostMapping("/teacher")
+    @PostMapping("/teacher/signup")
     public String teacherSignUp(@RequestBody TeacherSignUpRequest request) throws EmailCheckException {
-        userService.teacherSignUp(request);
-        return "성공";
+        return userService.teacherSignUp(request);
+
     }
 }
