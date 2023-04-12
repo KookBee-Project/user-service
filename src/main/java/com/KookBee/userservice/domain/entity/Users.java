@@ -1,15 +1,13 @@
 package com.KookBee.userservice.domain.entity;
 
-import com.KookBee.userservice.domain.dto.EStatus;
-import com.KookBee.userservice.domain.dto.EUserType;
+import com.KookBee.userservice.domain.enums.EStatus;
+import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bouncycastle.crypto.PasswordConverter;
-import org.springframework.data.domain.Auditable;
 
 @Entity
 @AllArgsConstructor
@@ -26,7 +24,6 @@ public class Users {
     private String userPhoneNumber;
     @Enumerated(EnumType.STRING)
     private EUserType userType;
-    private String salt_code;
     @Enumerated(EnumType.STRING)
     private EStatus userStatus;
     @OneToOne(mappedBy = "users",fetch = FetchType.LAZY)
@@ -40,5 +37,6 @@ public class Users {
         this.userBirth = dto.getUserBirth();
         this.userPhoneNumber = dto.getUserPhoneNumber();
         this.userType = dto.getUserType();
+        this.userStatus = EStatus.AVAILABLE;
     }
 }

@@ -1,5 +1,7 @@
 package com.KookBee.userservice.domain.entity;
 
+import com.KookBee.userservice.domain.dto.ManagerDTO;
+import com.KookBee.userservice.domain.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @Getter @Setter
 public class Manager {
-    @Id @OneToOne(fetch = FetchType.LAZY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "manager_id")
+    private Long id;
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users users;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,6 +28,8 @@ public class Manager {
     @OneToMany(mappedBy = "manager",fetch = FetchType.LAZY)
     private List<ManagerCampus> managerCampusList;
 
-
-
+    public Manager(ManagerDTO dto) {
+        this.users = dto.getUsers();
+        this.company = dto.getCompany();
+    }
 }
