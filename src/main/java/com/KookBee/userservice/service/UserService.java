@@ -5,6 +5,7 @@ import com.KookBee.userservice.domain.dto.UserDTO;
 import com.KookBee.userservice.domain.entity.*;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
@@ -30,24 +31,26 @@ public class UserService {
         // 1. save in User / User에 저장
         UserDTO userDTO = new UserDTO(request);
         Users users = new Users(userDTO);
-        Users saveUsers = userRepository.save(users);
+
         // 2. check is companyCode / companyCode가 있는지 확인
         Optional<Company> byCompanyCode
                 = companyRepository.findByCompanyCode(request.getCompanyCode());
         if (byCompanyCode.isPresent()){
+            Users saveUsers = userRepository.save(users);
+
             ManagerDTO managerDTO = new ManagerDTO();
             managerDTO.setUsers(saveUsers);
             managerDTO.setCompany(byCompanyCode.orElse(null));
             Manager manager = new Manager(managerDTO);
             Manager saveManager = managerRepository.save(manager);
-            request.getCampusList().stream().map(
-                    el -> {
-                        Campus campus = campusRepository.findByCampusName(el).get();
-                        ManagerCampus managerCampus = new ManagerCampus(saveManager, campus );
-                        managerCampusRepository.save(managerCampus);
-                        return  " 성공 ";
-                    }
-            );
+            List<String> campusList = request.getCampusList();
+            for (String campusName:campusList) {
+                Campus campus = campusRepository.findByCampusName(campusName).get();
+                System.out.println(campus);
+                ManagerCampus managerCampus = new ManagerCampus(saveManager, campus );
+                System.out.println(managerCampus);
+                managerCampusRepository.save(managerCampus);
+            }
         } else {
             System.out.println("몰?루");
         }

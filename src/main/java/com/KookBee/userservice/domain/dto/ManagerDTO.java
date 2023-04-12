@@ -20,7 +20,6 @@ import java.util.List;
 public class ManagerDTO {
 
     private Users users;
-
     private List<String> campusList;
     private Company company;
 
