@@ -1,7 +1,7 @@
 package com.KookBee.userservice.domain.entity;
 
 import com.KookBee.userservice.domain.dto.CompanyDTO;
-import com.KookBee.userservice.domain.dto.EStatus;
+import com.KookBee.userservice.domain.enums.EStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
