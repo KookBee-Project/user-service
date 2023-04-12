@@ -26,7 +26,6 @@ public class Users {
     private String userPhoneNumber;
     @Enumerated(EnumType.STRING)
     private EUserType userType;
-    private String salt_code;
     @Enumerated(EnumType.STRING)
     private EStatus userStatus;
     @OneToOne(mappedBy = "users",fetch = FetchType.LAZY)

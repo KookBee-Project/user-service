@@ -61,7 +61,6 @@ public class JwtService {
         Date now = new Date();
         String jwtToken =  Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("userIdx",userIdx)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*30))) // 만료기간은 1시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
