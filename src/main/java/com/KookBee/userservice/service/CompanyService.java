@@ -36,8 +36,8 @@ public class CompanyService {
 
     }
     //find company by company code
-    public Company findCompanyByCompanyCode(CompanyFindRequest request) {
+    public Long findCompanyByCompanyCode(CompanyFindRequest request) {
         Optional<Company> byCompanyCode = companyRepository.findByCompanyCode(request.getCompanyCode());
-        return byCompanyCode.orElse(null);
+        return byCompanyCode.orElse(null).getId();
     }
 }

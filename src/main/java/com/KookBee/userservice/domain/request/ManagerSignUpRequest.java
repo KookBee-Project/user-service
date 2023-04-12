@@ -19,6 +19,6 @@ public class ManagerSignUpRequest {
     private String userBirth;
     private String userPhoneNumber;
     private EUserType userType;
-    private Company company;
+    private Long companyId;
     private List<String> campusList;
 }

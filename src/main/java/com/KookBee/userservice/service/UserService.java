@@ -46,13 +46,13 @@ public class UserService {
         users.setSaltCode(salt);
 
         // 2. check is companyCode / companyCode가 있는지 확인
-        Company company = request.getCompany();
-        if (company != null){
+        Long companyId = request.getCompanyId();
+        if (companyId != null){
             Users saveUsers = userRepository.save(users);
 
             ManagerDTO managerDTO = new ManagerDTO();
             managerDTO.setUsers(saveUsers);
-            managerDTO.setCompany(company);
+            managerDTO.setCompany(companyRepository.findById(companyId).get());
             Manager manager = new Manager(managerDTO);
             Manager saveManager = managerRepository.save(manager);
             List<String> campusList = request.getCampusList();

@@ -25,7 +25,7 @@ public class UserServiceApplication {
 						.allowCredentials(true)
 						.allowedHeaders("*")
 						.allowedMethods("*")
-						.allowedOrigins("http://localhost:3000");
+						.allowedOrigins("http://localhost:3000","http://localhost:3001");
 			}
 		};
 	}
