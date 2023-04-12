@@ -15,7 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @Getter @Setter
 public class Manager {
-    @Id @OneToOne(fetch = FetchType.LAZY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "manager_id")
+    private Long id;
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users users;
     @ManyToOne(fetch = FetchType.LAZY)
