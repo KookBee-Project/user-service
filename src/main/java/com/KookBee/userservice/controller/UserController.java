@@ -28,4 +28,5 @@ public class UserController {
     public String StudentSignUp(@RequestBody Users users) throws EmailCheckException {
         return userService.studentSignUpService(users);
     }
+
 }

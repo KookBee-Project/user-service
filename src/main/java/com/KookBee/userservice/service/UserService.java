@@ -1,10 +1,11 @@
 package com.KookBee.userservice.service;
 
+import com.KookBee.userservice.domain.dto.ManagerDTO;
 import com.KookBee.userservice.domain.dto.UserDTO;
-import com.KookBee.userservice.domain.entity.Users;
+import com.KookBee.userservice.domain.entity.*;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
-import com.KookBee.userservice.repository.CompanyRepository;
-import com.KookBee.userservice.repository.UserRepository;
+import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
+import com.KookBee.userservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
@@ -13,6 +14,8 @@ import com.KookBee.userservice.exception.LoginException;
 import com.KookBee.userservice.security.JwtService;
 import com.KookBee.userservice.converter.Encrypt;
 import com.KookBee.userservice.exception.EmailCheckException;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,20 +24,70 @@ public class UserService {
     private final UserRepository userRepository;
     private final Encrypt encrypt;
     private final CompanyRepository companyRepository;
-
-    public void managerSignUp(ManagerSignUpRequest request) {
-        // 1. save in User / User에 저장
+    private final ManagerRepository managerRepository;
+    private final CampusRepository campusRepository;
+    private final ManagerCampusRepository managerCampusRepository;
+    public String managerSignUp(ManagerSignUpRequest request) throws EmailCheckException {
+        // 이메일 중복체크
+        Optional<Users> findByUserEmail = userRepository.findByUserEmail(request.getUserEmail());
+        // 중복된 이메일이 있을 경우, EmailCheckException을 던진다.
+        if(findByUserEmail.isPresent()){
+            throw new EmailCheckException();
+        }
+        // dto 및 유저생성
         UserDTO userDTO = new UserDTO(request);
         Users users = new Users(userDTO);
-        userRepository.save(users);
-        // 2. check is companyCode / companyCode가 있는지 확인
-//        if (companyRepository.findByCompanyCode(request.getCompanyCode()){
-//
-//        }
-        // 3-1 if true find campus of company / 있다면 company의 campus목록을 불러옴
-        // 4. save campusList in manager_campus / 캠퍼스 목록을 manager_campus에 저장함
-    }
+        // 암호화에 사용된 salt를 변수로 저장한다.
+        String salt = encrypt.getSalt();
+        // 비밀번호 암호화
+        String encoded = encrypt.getEncrypt(users.getUserPw(), salt);
+        // salt와 암호화된 비밀번호를 users에 저장
+        users.setUserPw(encoded);
+        users.setSaltCode(salt);
 
+        // 2. check is companyCode / companyCode가 있는지 확인
+        Company company = request.getCompany();
+        if (company != null){
+            Users saveUsers = userRepository.save(users);
+
+            ManagerDTO managerDTO = new ManagerDTO();
+            managerDTO.setUsers(saveUsers);
+            managerDTO.setCompany(company);
+            Manager manager = new Manager(managerDTO);
+            Manager saveManager = managerRepository.save(manager);
+            List<String> campusList = request.getCampusList();
+            for (String campusName:campusList) {
+                Campus campus = campusRepository.findByCampusName(campusName).get();
+                ManagerCampus managerCampus = new ManagerCampus(saveManager, campus );
+                managerCampusRepository.save(managerCampus);
+            }
+            return "회원가입 성공";
+        } else {
+            return "실패";
+        }
+
+    }
+    public String teacherSignUp(TeacherSignUpRequest request) throws EmailCheckException {
+        // 이메일 중복체크
+        Optional<Users> findByUserEmail = userRepository.findByUserEmail(request.getUserEmail());
+        // 중복된 이메일이 있을 경우, EmailCheckException을 던진다.
+        if(findByUserEmail.isPresent()){
+            throw new EmailCheckException();
+        }
+        // dto 및 유저생성
+        UserDTO userDTO = new UserDTO(request);
+        Users users = new Users(userDTO);
+        // 암호화에 사용된 salt를 변수로 저장한다.
+        String salt = encrypt.getSalt();
+        // 비밀번호 암호화
+        String encoded = encrypt.getEncrypt(users.getUserPw(), salt);
+        // salt와 암호화된 비밀번호를 users에 저장
+        users.setUserPw(encoded);
+        users.setSaltCode(salt);
+        // DB에 저장
+        userRepository.save(users);
+        return "가입이 완료되었습니다.";
+    };
     private final JwtService jwtService;
     public UserLoginResponse login(UserLoginRequest request) {
         Optional<Users> findByLogin = userRepository.findByUserEmail(request.getUserEmail());
