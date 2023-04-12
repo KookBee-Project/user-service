@@ -1,5 +1,6 @@
 package com.KookBee.userservice.service;
 
+import com.KookBee.userservice.domain.dto.EStatus;
 import com.KookBee.userservice.domain.dto.ManagerDTO;
 import com.KookBee.userservice.domain.dto.UserDTO;
 import com.KookBee.userservice.domain.entity.*;
@@ -27,10 +28,23 @@ public class UserService {
     private final ManagerRepository managerRepository;
     private final CampusRepository campusRepository;
     private final ManagerCampusRepository managerCampusRepository;
-    public void managerSignUp(ManagerSignUpRequest request) {
-        // 1. save in User / User에 저장
+    public String managerSignUp(ManagerSignUpRequest request) throws EmailCheckException {
+        // 이메일 중복체크
+        Optional<Users> findByUserEmail = userRepository.findByUserEmail(request.getUserEmail());
+        // 중복된 이메일이 있을 경우, EmailCheckException을 던진다.
+        if(findByUserEmail.isPresent()){
+            throw new EmailCheckException();
+        }
+        // dto 및 유저생성
         UserDTO userDTO = new UserDTO(request);
         Users users = new Users(userDTO);
+        // 암호화에 사용된 salt를 변수로 저장한다.
+        String salt = encrypt.getSalt();
+        // 비밀번호 암호화
+        String encoded = encrypt.getEncrypt(users.getUserPw(), salt);
+        // salt와 암호화된 비밀번호를 users에 저장
+        users.setUserPw(encoded);
+        users.setSaltCode(salt);
 
         // 2. check is companyCode / companyCode가 있는지 확인
         Optional<Company> byCompanyCode
@@ -39,25 +53,22 @@ public class UserService {
             Users saveUsers = userRepository.save(users);
 
             ManagerDTO managerDTO = new ManagerDTO();
+            System.out.println(saveUsers.getId());
             managerDTO.setUsers(saveUsers);
+            System.out.println(byCompanyCode.orElse(null).getId());
             managerDTO.setCompany(byCompanyCode.orElse(null));
             Manager manager = new Manager(managerDTO);
             Manager saveManager = managerRepository.save(manager);
             List<String> campusList = request.getCampusList();
             for (String campusName:campusList) {
                 Campus campus = campusRepository.findByCampusName(campusName).get();
-                System.out.println(campus);
                 ManagerCampus managerCampus = new ManagerCampus(saveManager, campus );
-                System.out.println(managerCampus);
                 managerCampusRepository.save(managerCampus);
             }
+            return "회원가입 성공";
         } else {
-            System.out.println("몰?루");
+            return "실패";
         }
-
-        // 3-1 if true find campus of company / 있다면 company의 campus목록을 불러옴
-
-        // 4. save campusList in manager_campus / 캠퍼스 목록을 manager_campus에 저장함
 
     }
 

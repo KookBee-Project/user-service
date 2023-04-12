@@ -26,7 +26,7 @@ public class Company {
 
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<Campus> campuses;
-    @OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<Manager> managers;
 
     public Company(CompanyDTO dto) {
