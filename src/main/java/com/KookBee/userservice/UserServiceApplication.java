@@ -17,14 +17,15 @@ public class UserServiceApplication {
 	}
 	// cors 해결법-----------
 	@Bean
-	public WebMvcConfigurer corsConfigurer(){
+	public WebMvcConfigurer corsConfigure(){
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
+						.allowCredentials(true)
 						.allowedHeaders("*")
 						.allowedMethods("*")
-						.allowedOrigins("*");
+						.allowedOrigins("http://localhost:3000");
 			}
 		};
 	}

@@ -9,7 +9,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -20,8 +20,10 @@ spring:
         max-active: 10 # pool에 할당될 수 있는 커넥션 최대수 (음수로 하면 무제한)
         max-idle: 10
         min-idle: 2
+#    host: 34.64.173.178
+    host: localhost
     port: 6379
-    host: 34.64.173.178
+
   application:
     name: user-service
 

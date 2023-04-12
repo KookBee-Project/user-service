@@ -37,12 +37,17 @@ public class UserService {
 
     private final JwtService jwtService;
     public UserLoginResponse login(UserLoginRequest request) {
-        Optional<Users> findByLogin = userRepository.findByUserEmailAndUserPw(request.getUserEmail(), request.getUserPw());
+        Optional<Users> findByLogin = userRepository.findByUserEmail(request.getUserEmail());
         Users users = findByLogin.orElseThrow(LoginException::new);
-        // 토큰 생성
-        String accessToken = jwtService.createAccessToken(users.getId());
-        String refreshToken = jwtService.createRefreshToken(users.getId());
-        return new UserLoginResponse(users.getId(), accessToken, refreshToken);
+        String salt = users.getSaltCode();
+        String encoded = encrypt.getEncrypt(request.getUserPw(), salt);
+        if(encoded.equals(users.getUserPw())) {
+            // 토큰 생성
+            String accessToken = jwtService.createAccessToken(users.getId());
+            String refreshToken = jwtService.createRefreshToken(users.getId());
+            return new UserLoginResponse(users.getId(), accessToken, refreshToken);
+        }
+        return null;
     }
 
     public String studentSignUpService(Users users) throws EmailCheckException {
