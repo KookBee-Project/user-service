@@ -1,5 +1,6 @@
 package com.KookBee.userservice.domain.dto;
 
+import com.KookBee.userservice.domain.request.CompanyFindRequest;
 import com.KookBee.userservice.domain.request.CompanyInsertRequest;
 import lombok.*;
 
@@ -20,5 +21,9 @@ public class CompanyDTO {
         this.companyTelNumber = request.getCompanyTelNumber();
         this.companyBusinessNumber = request.getCompanyBusinessNumber();
         this.companyCode = companyCode;
+    }
+
+    public CompanyDTO(CompanyFindRequest request) {
+        this.companyCode = request.getCompanyCode();
     }
 }
