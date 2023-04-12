@@ -1,10 +1,7 @@
 package com.KookBee.userservice.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -15,7 +12,7 @@ public class ManagerCampus {
     @Column(name = "manager_campus_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "manager_id")
     private Manager manager;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campus_id")

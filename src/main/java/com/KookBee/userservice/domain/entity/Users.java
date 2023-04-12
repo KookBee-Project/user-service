@@ -39,5 +39,6 @@ public class Users {
         this.userBirth = dto.getUserBirth();
         this.userPhoneNumber = dto.getUserPhoneNumber();
         this.userType = dto.getUserType();
+        this.userStatus = EStatus.AVAILABLE;
     }
 }
