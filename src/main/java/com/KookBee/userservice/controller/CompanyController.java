@@ -1,5 +1,7 @@
 package com.KookBee.userservice.controller;
 
+import com.KookBee.userservice.domain.entity.Company;
+import com.KookBee.userservice.domain.request.CompanyFindRequest;
 import com.KookBee.userservice.domain.request.CompanyInsertRequest;
 import com.KookBee.userservice.service.CompanyService;
 import lombok.RequiredArgsConstructor;
@@ -14,5 +16,12 @@ public class CompanyController {
     @PostMapping
     public void insertCompany(@RequestBody CompanyInsertRequest request){
         companyService.insertCompany(request);
+    }
+
+    @PostMapping("/companycode")
+    public Company findCompany (@RequestBody CompanyFindRequest request) {
+        Company companyByCompanyCode = companyService.findCompanyByCompanyCode(request);
+        return companyByCompanyCode;
+
     }
 }

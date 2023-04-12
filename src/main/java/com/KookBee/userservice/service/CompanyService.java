@@ -2,6 +2,7 @@ package com.KookBee.userservice.service;
 
 import com.KookBee.userservice.domain.dto.CompanyDTO;
 import com.KookBee.userservice.domain.entity.Company;
+import com.KookBee.userservice.domain.request.CompanyFindRequest;
 import com.KookBee.userservice.domain.request.CompanyInsertRequest;
 import com.KookBee.userservice.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +34,10 @@ public class CompanyService {
         Company company = new Company(dto);
         companyRepository.save(company);
 
+    }
+    //find company by company code
+    public Company findCompanyByCompanyCode(CompanyFindRequest request) {
+        Optional<Company> byCompanyCode = companyRepository.findByCompanyCode(request.getCompanyCode());
+        return byCompanyCode.orElse(null);
     }
 }

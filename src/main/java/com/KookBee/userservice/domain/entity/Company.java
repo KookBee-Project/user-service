@@ -2,6 +2,7 @@ package com.KookBee.userservice.domain.entity;
 
 import com.KookBee.userservice.domain.dto.CompanyDTO;
 import com.KookBee.userservice.domain.dto.EStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,9 +25,10 @@ public class Company {
     @Enumerated(EnumType.STRING)
     private EStatus companyStatus;
     private String companyCode;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<Campus> campuses;
+    @JsonIgnore
     @OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private List<Manager> managers;
 
