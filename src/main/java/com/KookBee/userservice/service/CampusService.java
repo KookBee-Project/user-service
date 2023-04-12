@@ -3,12 +3,14 @@ package com.KookBee.userservice.service;
 import com.KookBee.userservice.domain.dto.CampusDTO;
 import com.KookBee.userservice.domain.entity.Campus;
 import com.KookBee.userservice.domain.entity.Company;
+import com.KookBee.userservice.domain.request.CampusFindByCompanyRequest;
 import com.KookBee.userservice.domain.request.CampusInsertRequest;
 import com.KookBee.userservice.repository.CampusRepository;
 import com.KookBee.userservice.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,14 +21,13 @@ public class CampusService {
 
     public void insertCampus(CampusInsertRequest request){
         CampusDTO dto = new CampusDTO(request);
-        System.out.println(request);
-        System.out.println(dto);
         Optional<Company> byId = companyRepository.findById(request.getCompanyId());
-//        dto.setCompany(byId.orElse(null));
         dto.setCompany(byId.get());
-        System.out.println(dto);
         Campus campus = new Campus(dto);
-        System.out.println(campus);
         campusRepository.save(campus);
     }
+    public List<String> findCampus(CampusFindByCompanyRequest request) {
+        return campusRepository.findCampusNameByCompanyId(request.getCompanyId());
+    }
+
 }
