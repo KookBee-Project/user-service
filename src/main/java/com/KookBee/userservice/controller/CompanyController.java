@@ -3,6 +3,7 @@ package com.KookBee.userservice.controller;
 import com.KookBee.userservice.domain.entity.Company;
 import com.KookBee.userservice.domain.request.CompanyFindRequest;
 import com.KookBee.userservice.domain.request.CompanyInsertRequest;
+import com.KookBee.userservice.domain.response.CompanyCodeResponse;
 import com.KookBee.userservice.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,10 @@ public class CompanyController {
     }
 
     @PostMapping("/companycode")
-    public Long findCompany (@RequestBody CompanyFindRequest request) {
-        Long companyByCompanyCode = companyService.findCompanyByCompanyCode(request);
-        return companyByCompanyCode;
+    public CompanyCodeResponse findCompany (@RequestBody CompanyFindRequest request) {
+
+        return companyService.findCompanyByCompanyCode(request);
+
 
     }
 }

@@ -2,6 +2,7 @@ package com.KookBee.userservice.security;
 
 import com.KookBee.userservice.domain.entity.RefreshToken;
 import com.KookBee.userservice.repository.RefreshTokenRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +40,13 @@ public class JwtService {
     }
 
 
-    public String createAccessToken(Long userIdx){
+    public String createAccessToken(Long userId){
         byte[] keyBytes = Decoders.BASE64.decode(AccessSecret);
         Key key = Keys.hmacShaKeyFor(keyBytes);
         Date now = new Date();
         String accessToken = Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("userIdx",userIdx)
+                .claim("userId",userId)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*30))) // 만료기간은 30분으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -62,18 +64,12 @@ public class JwtService {
         String jwtToken =  Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*30))) // 만료기간은 1시간으로 설정
+                .setExpiration(new Date(System.currentTimeMillis()+2*(1000*60*60))) // 만료기간은 1시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         RefreshToken refreshToken = new RefreshToken(jwtToken, userIdx);
         refreshTokenRepository.save(refreshToken);
         return refreshToken.getRefreshToken();
-    }
-
-
-    public String getAccessToken(){
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getHeader("Authorization");
     }
 
 
@@ -86,7 +82,7 @@ public class JwtService {
     public void setAccessTokenInHttpOnlyCookie(HttpServletResponse response, String accessToken) {
         // 쿠키 생성 및 값 설정
         Cookie cookie = new Cookie("accessToken", accessToken);
-//        cookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 만료일 설정 (예: 7일 뒤)
+        cookie.setMaxAge(60 * 30); // 쿠키 만료일 설정 (예: 7일 뒤)
         cookie.setHttpOnly(true); // HTTPOnly 쿠키 설정
         cookie.setPath("/"); // 쿠키 경로 설정 (옵션)
 
@@ -94,7 +90,7 @@ public class JwtService {
         response.addCookie(cookie);
     }
 
-    public String getCookie(HttpServletRequest request) {
+    public String getAccessToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -108,5 +104,37 @@ public class JwtService {
         }
         // 쿠키가 없을 경우 예외 처리 또는 기본값 설정
         return null;
+    }
+
+    public TokenInfo tokenToDTO(String accessToken){
+        try{
+            Claims claims = Jwts
+                    .parserBuilder()
+                    .setSigningKey(AccessSecret)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+            TokenInfo info = new TokenInfo().tokenToDTO(claims);
+            return info;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public String checkToken(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+        String accessToken = getAccessToken(request);
+        String refreshToken = getRefreshToken();
+        if(tokenToDTO(accessToken) == null) {
+            Optional<RefreshToken> redisToken =  refreshTokenRepository.findById(refreshToken);
+            if(redisToken.isPresent()){
+                String newAccessToken = createAccessToken(redisToken.get().getUserIdx());
+                setAccessTokenInHttpOnlyCookie(response, newAccessToken);
+                return newAccessToken;
+            }
+            return "이건 로그아웃이다.";
+        }
+        return "지나가라.";
     }
 }
