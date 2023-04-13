@@ -120,21 +120,45 @@ public class JwtService {
             return null;
         }
     }
-
-    public String checkToken(){
+    public boolean isValidTokens(){ //엑세스 토큰과 리프레쉬 토큰의 유효성을 둘다 검사한다
+        //check both refresh AND access token
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         String accessToken = getAccessToken(request);
         String refreshToken = getRefreshToken();
-        if(tokenToDTO(accessToken) == null) {
-            Optional<RefreshToken> redisToken =  refreshTokenRepository.findById(refreshToken);
-            if(redisToken.isPresent()){
-                String newAccessToken = createAccessToken(redisToken.get().getUserIdx());
-                setAccessTokenInHttpOnlyCookie(response, newAccessToken);
-                return newAccessToken;
-            }
-            return "이건 로그아웃이다.";
+        if(!isValidAccessToken(accessToken)){
+            return isValidRefreshToken(refreshToken);
         }
-        return "지나가라.";
+        return true;
+
+
+
+    }
+    public boolean isValidAccessToken(String accessToken){
+        if(accessToken.isEmpty()) return false;
+        // Access Token이 유효하지 않으면
+        // is access token is not valid
+        if(tokenToDTO(accessToken) == null) return false;
+
+        return true;
+    }
+
+    private boolean isValidRefreshToken(String refreshToken) {
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+        Optional<RefreshToken> redisToken =  refreshTokenRepository.findById(refreshToken);
+        if(redisToken.isPresent()) {
+            // Refresh Token이 있다면 새로운 Access Token을 생성하여 HTTPOnly 쿠키에 설정하고 반환한다
+            // if refresh token exists create new access token and set pm HTTPOnly cookie
+            refreshAccessToken(response, redisToken.get());
+            return true;
+        }
+        return false;
+    }
+
+    private void refreshAccessToken(HttpServletResponse response, RefreshToken redisToken) {
+        //새로운 엑세스 토큰 생성
+        // create new access token
+        String newAccessToken = createAccessToken(redisToken.getUserIdx());
+        setAccessTokenInHttpOnlyCookie(response, newAccessToken);
+
     }
 }
