@@ -23,7 +23,7 @@ public class CampusController {
         campusService.insertCampus(request);
     }
 
-    @PostMapping("/companyname" )
+    @PostMapping("/companyname")
     public List<String> findByCompanyName(@RequestBody CampusFindByCompanyRequest request){
         return campusService.findCampus(request);
     }

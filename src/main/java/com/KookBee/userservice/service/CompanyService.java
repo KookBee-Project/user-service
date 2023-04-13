@@ -4,6 +4,7 @@ import com.KookBee.userservice.domain.dto.CompanyDTO;
 import com.KookBee.userservice.domain.entity.Company;
 import com.KookBee.userservice.domain.request.CompanyFindRequest;
 import com.KookBee.userservice.domain.request.CompanyInsertRequest;
+import com.KookBee.userservice.domain.response.CompanyCodeResponse;
 import com.KookBee.userservice.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,12 @@ public class CompanyService {
 
     }
     //find company by company code
-    public Long findCompanyByCompanyCode(CompanyFindRequest request) {
+    public CompanyCodeResponse findCompanyByCompanyCode(CompanyFindRequest request) {
         Optional<Company> byCompanyCode = companyRepository.findByCompanyCode(request.getCompanyCode());
-        return byCompanyCode.orElse(null).getId();
+        CompanyCodeResponse companyCodeResponse
+                = new CompanyCodeResponse
+                (byCompanyCode.orElse(null).getId()
+                        ,byCompanyCode.orElse(null).getCompanyName());
+        return companyCodeResponse;
     }
 }
