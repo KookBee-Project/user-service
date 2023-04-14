@@ -125,15 +125,10 @@ public class UserService {
         return "가입이 완료되었습니다.";
     };
 
-    public Teacher getTeacher(Long userId) {
-        try {
-            Optional<Users> findUser = userRepository.findById(userId);
-            Users users = findUser.orElseThrow(NullPointerException::new);
-            Optional<Teacher> findById = teacherRepository.findByUsers(users);
-            Teacher teacher = findById.orElseThrow(NullPointerException::new);
-            return teacher;
-        }catch (Exception e){
-            return null;
-        }
+    public Users getUser(Long userId) {
+        Optional<Users> findById = userRepository.findById(userId);
+        Users user = findById.orElseThrow(NullPointerException::new);
+        return user;
     }
+
 }

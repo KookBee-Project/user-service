@@ -8,6 +8,7 @@ import com.KookBee.userservice.exception.EmailCheckException;
 import com.KookBee.userservice.security.JwtService;
 import com.KookBee.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final JwtService jwtService;
 
     @PostMapping("/login")
     public UserLoginResponse login(@RequestBody UserLoginRequest request){
@@ -27,4 +27,9 @@ public class UserController {
     public String StudentSignUp(@RequestBody Users users) throws EmailCheckException {
         return userService.studentSignUpService(users);
     }
+    @GetMapping("/{userId}")
+    public Users getUserById(@PathVariable("userId") Long userId){
+        return userService.getUser(userId);
+    }
+
 }

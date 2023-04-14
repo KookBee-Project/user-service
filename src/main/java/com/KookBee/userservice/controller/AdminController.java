@@ -24,8 +24,4 @@ public class AdminController {
 
     }
 
-    @GetMapping("/{id}")
-    public Teacher getTeacher(@PathVariable("id") Long userId){
-        return userService.getTeacher(userId);
-    }
 }
