@@ -25,6 +25,7 @@ public class UserService {
     private final Encrypt encrypt;
     private final CompanyRepository companyRepository;
     private final ManagerRepository managerRepository;
+    private final TeacherRepository teacherRepository;
     private final CampusRepository campusRepository;
     private final ManagerCampusRepository managerCampusRepository;
     public String managerSignUp(ManagerSignUpRequest request) throws EmailCheckException {
@@ -85,7 +86,9 @@ public class UserService {
         users.setUserPw(encoded);
         users.setSaltCode(salt);
         // DB에 저장
-        userRepository.save(users);
+        Users saveUser = userRepository.save(users);
+        Teacher teacher = new Teacher(saveUser);
+        teacherRepository.save(teacher);
         return "가입이 완료되었습니다.";
     };
     private final JwtService jwtService;
@@ -121,4 +124,16 @@ public class UserService {
         userRepository.save(users);
         return "가입이 완료되었습니다.";
     };
+
+    public Teacher getTeacher(Long userId) {
+        try {
+            Optional<Users> findUser = userRepository.findById(userId);
+            Users users = findUser.orElseThrow(NullPointerException::new);
+            Optional<Teacher> findById = teacherRepository.findByUsers(users);
+            Teacher teacher = findById.orElseThrow(NullPointerException::new);
+            return teacher;
+        }catch (Exception e){
+            return null;
+        }
+    }
 }

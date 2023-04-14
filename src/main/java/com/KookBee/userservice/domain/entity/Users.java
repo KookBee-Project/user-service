@@ -28,6 +28,8 @@ public class Users {
     private EStatus userStatus;
     @OneToOne(mappedBy = "users",fetch = FetchType.LAZY)
     private Manager manager;
+    @OneToOne(mappedBy = "users",fetch = FetchType.LAZY)
+    private Teacher teacher;
     private String saltCode;
 
     public Users(UserDTO dto) {
