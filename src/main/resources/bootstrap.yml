@@ -1,6 +1,6 @@
 spring:
   cloud:
     config:
-      uri: http://192.168.80.214:8888/
+      uri: http://34.64.69.238:8888/
       name: jwt
       enabled: true
