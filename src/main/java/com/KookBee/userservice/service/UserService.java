@@ -7,6 +7,7 @@ import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
 import com.KookBee.userservice.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
@@ -130,5 +131,13 @@ public class UserService {
         Users user = findById.orElseThrow(NullPointerException::new);
         return user;
     }
-
+    public Users getUserByTeacherEmail (String email) {
+        Optional<Users> findByEmail = userRepository.findByUserEmail(email);
+        Users users = findByEmail.orElseThrow(NullPointerException::new);
+        if (users.getUserType().toString() != "TEACHER") {
+            return null;
+        } else {
+            return users;
+        }
+    }
 }

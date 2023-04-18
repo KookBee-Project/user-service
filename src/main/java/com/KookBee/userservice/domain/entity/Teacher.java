@@ -1,5 +1,6 @@
 package com.KookBee.userservice.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "teacher_id")
     private Long id;
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users users;
