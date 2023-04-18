@@ -1,14 +1,12 @@
 package com.KookBee.userservice.controller;
 
+import com.KookBee.userservice.domain.entity.Teacher;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
 import com.KookBee.userservice.exception.EmailCheckException;
 import com.KookBee.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -25,4 +23,5 @@ public class AdminController {
         return userService.teacherSignUp(request);
 
     }
+
 }
