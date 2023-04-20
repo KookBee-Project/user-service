@@ -90,7 +90,8 @@ public class JwtService {
         response.addCookie(cookie);
     }
 
-    public String getAccessToken(HttpServletRequest request) {
+    public String getAccessToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -122,8 +123,7 @@ public class JwtService {
     }
     public boolean isValidTokens(){ //엑세스 토큰과 리프레쉬 토큰의 유효성을 둘다 검사한다
         //check both refresh AND access token
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String accessToken = getAccessToken(request);
+        String accessToken = getAccessToken();
         String refreshToken = getRefreshToken();
         if(!isValidAccessToken(accessToken)){
             return isValidRefreshToken(refreshToken);

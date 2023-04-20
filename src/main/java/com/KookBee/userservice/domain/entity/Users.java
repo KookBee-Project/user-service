@@ -43,4 +43,8 @@ public class Users {
         this.userType = dto.getUserType();
         this.userStatus = EStatus.AVAILABLE;
     }
+
+    public Users(Long userId) {
+        this.id = userId;
+    }
 }

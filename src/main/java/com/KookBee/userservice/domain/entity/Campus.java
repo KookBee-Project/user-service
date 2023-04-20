@@ -2,6 +2,7 @@ package com.KookBee.userservice.domain.entity;
 
 import com.KookBee.userservice.domain.dto.CampusDTO;
 import com.KookBee.userservice.domain.enums.EStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class Campus {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "campus_id")
     private Long id;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
@@ -25,6 +27,7 @@ public class Campus {
     @Enumerated(EnumType.STRING)
     private EStatus campusStatus;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "campus", fetch = FetchType.LAZY)
     private List<ManagerCampus> managerCampusList;
 
