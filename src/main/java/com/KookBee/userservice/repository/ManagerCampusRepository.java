@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ManagerCampusRepository extends JpaRepository <ManagerCampus,Long> {
     List<ManagerCampus> findByManager(Manager manager);
+
 }
