@@ -140,4 +140,10 @@ public class UserService {
             return users;
         }
     }
+
+    public Users getUserByTeacherId(Long teacherId) {
+        Optional<Users> findById = userRepository.findById(teacherId);
+        Users users = findById.orElseThrow(NullPointerException::new);
+        return users;
+    }
 }

@@ -29,4 +29,9 @@ public class AdminController {
         return userService.getUserByTeacherEmail(email);
     }
 
+    @GetMapping("manager/teacher/{teacherId}")
+    public Users findUserTeacherId(@PathVariable("teacherId") Long teacherId){
+        return userService.getUserByTeacherId(teacherId);
+    }
+
 }
