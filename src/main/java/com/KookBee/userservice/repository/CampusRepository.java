@@ -1,6 +1,8 @@
 package com.KookBee.userservice.repository;
 
 import com.KookBee.userservice.domain.entity.Campus;
+import com.KookBee.userservice.domain.entity.Company;
+import com.KookBee.userservice.domain.entity.Manager;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,5 +21,5 @@ public interface CampusRepository extends JpaRepository<Campus,Long> {
             "on cc.id = :id")
     List<String> findCampusNameByCompanyId(@Param("id") Long companyId);
 
-
+    List<Campus> findByCompanyIdIn(List<Long> campusIdList);
 }
