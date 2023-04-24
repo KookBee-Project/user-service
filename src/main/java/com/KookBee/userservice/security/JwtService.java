@@ -84,9 +84,10 @@ public class JwtService {
         // 쿠키 생성 및 값 설정
         response.addHeader("Set-Cookie", ResponseCookie.from("accessToken", accessToken)
                 .maxAge(60 * 30)// 쿠키 만료일 설정 (예: 30분)
-                .sameSite("None")
+//                 .sameSite("None")
+//                 .secure(true)    
                 .path("/") // 쿠키 경로 설정 (옵션)
-                .httpOnly(true) // HTTPOnly 쿠키 설정
+//                 .httpOnly(true) // HTTPOnly 쿠키 설정
                 .build().toString());
     }
 
