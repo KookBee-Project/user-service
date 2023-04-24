@@ -48,4 +48,4 @@ jobs:
             sudo docker stop $(sudo docker ps -a | grep kookbee-user-service | awk '{print $1}') 
             sudo docker rm $(sudo docker ps -a | grep kookbee-user-service | awk '{print $1}') 
             sudo docker pull jinu0125/kookbee-user-service
-            sudo docker run -d -p 8000:8000 --name kookbee-user-service jinu0125/kookbee-user-service
+            sudo docker run -d -p 9000:9000 --name kookbee-user-service jinu0125/kookbee-user-service
