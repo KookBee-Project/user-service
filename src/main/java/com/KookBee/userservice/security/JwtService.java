@@ -78,6 +78,7 @@ public class JwtService {
         return request.getHeader("RefreshToken");
     }
 
+    // JWT 토큰을 HTTPOnly 쿠키에 설정하는 메소드
     public void setAccessTokenInHttpOnlyCookie(HttpServletResponse response, String accessToken) {
         // 쿠키 생성 및 값 설정
         response.addHeader("Set-Cookie", ResponseCookie.from("accessToken", accessToken)
