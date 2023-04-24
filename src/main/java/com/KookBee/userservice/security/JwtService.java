@@ -78,16 +78,15 @@ public class JwtService {
         return request.getHeader("RefreshToken");
     }
 
-    // JWT 토큰을 HTTPOnly 쿠키에 설정하는 메소드
     public void setAccessTokenInHttpOnlyCookie(HttpServletResponse response, String accessToken) {
         // 쿠키 생성 및 값 설정
-        Cookie cookie = new Cookie("accessToken", accessToken);
-        cookie.setMaxAge(60 * 30); // 쿠키 만료일 설정 (예: 7일 뒤)
-        cookie.setHttpOnly(true); // HTTPOnly 쿠키 설정
-        cookie.setPath("/"); // 쿠키 경로 설정 (옵션)
-
-        // HTTP 응답 헤더에 쿠키 설정
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", ResponseCookie.from("accessToken", accessToken)
+                .maxAge(60 * 30)// 쿠키 만료일 설정 (예: 30분)
+                .sameSite("None")
+                .secure(true)
+                .path("/") // 쿠키 경로 설정 (옵션)
+                .httpOnly(true) // HTTPOnly 쿠키 설정
+                .build().toString());
     }
 
     public String getAccessToken() {
