@@ -30,15 +30,33 @@ public class JwtService {
     @Value("${jwt.REFRESH_SECRET_KEY}")
     private String RefreshSecret;
 
+//    public void setAccessTokenInHttpOnlyCookie(HttpServletResponse response, String accessToken) {
+//        // 쿠키 생성 및 값 설정
+//        response.addHeader("Set-Cookie", ResponseCookie.from("accessToken", accessToken)
+//                .maxAge(60 * 30)// 쿠키 만료일 설정 (예: 30분)
+//                .sameSite("None")
+//                .secure(true)
+//                .path("/") // 쿠키 경로 설정 (옵션)
+//                .httpOnly(true) // HTTPOnly 쿠키 설정
+//                .build().toString());
+//    }
 
-
-    public String[] createTokenWhenLogin(Long userId){
-        String refreshToken = createRefreshToken(userId);
-        String accessToken = createAccessToken(userId);
-
-        String[] tokenList = {refreshToken, accessToken};
-        return tokenList;
-    }
+//    public String getAccessToken() {
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("accessToken")) {
+//                    // accessToken이라는 이름의 쿠키에서 값 읽어오기
+//                    String accessToken = cookie.getValue();
+//                    // 값 처리 로직
+//                    return accessToken;
+//                }
+//            }
+//        }
+//        // 쿠키가 없을 경우 예외 처리 또는 기본값 설정
+//        return null;
+//    }
 
 
     public String createAccessToken(Long userId){
@@ -52,8 +70,8 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*30))) // 만료기간은 30분으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-        setAccessTokenInHttpOnlyCookie(response, accessToken);
+//        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+//        setAccessTokenInHttpOnlyCookie(response, accessToken);
         return accessToken;
     }
 
@@ -79,33 +97,9 @@ public class JwtService {
         return request.getHeader("RefreshToken");
     }
 
-    // JWT 토큰을 HTTPOnly 쿠키에 설정하는 메소드
-    public void setAccessTokenInHttpOnlyCookie(HttpServletResponse response, String accessToken) {
-        // 쿠키 생성 및 값 설정
-        response.addHeader("Set-Cookie", ResponseCookie.from("accessToken", accessToken)
-                .maxAge(60 * 30)// 쿠키 만료일 설정 (예: 30분)
-//                 .sameSite("None")
-//                 .secure(true)    
-                .path("/") // 쿠키 경로 설정 (옵션)
-//                 .httpOnly(true) // HTTPOnly 쿠키 설정
-                .build().toString());
-    }
-
     public String getAccessToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("accessToken")) {
-                    // accessToken이라는 이름의 쿠키에서 값 읽어오기
-                    String accessToken = cookie.getValue();
-                    // 값 처리 로직
-                    return accessToken;
-                }
-            }
-        }
-        // 쿠키가 없을 경우 예외 처리 또는 기본값 설정
-        return null;
+        return request.getHeader("AccessToken");
     }
 
     public TokenInfo tokenToDTO(String accessToken){
@@ -159,7 +153,7 @@ public class JwtService {
         //새로운 엑세스 토큰 생성
         // create new access token
         String newAccessToken = createAccessToken(redisToken.getUserIdx());
-        setAccessTokenInHttpOnlyCookie(response, newAccessToken);
+        response.addHeader("accessToken", newAccessToken);
 
     }
 }
