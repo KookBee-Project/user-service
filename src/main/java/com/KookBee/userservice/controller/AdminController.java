@@ -43,5 +43,4 @@ public class AdminController {
     public List<CampusListResponse> getCampusList(){
         return managerService.getCampusList();
     }
-
 }
