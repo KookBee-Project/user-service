@@ -27,6 +27,7 @@ public class Users {
     private EUserType userType;
     @Enumerated(EnumType.STRING)
     private EStatus userStatus;
+    @JsonIgnore
     @OneToOne(mappedBy = "users",fetch = FetchType.LAZY)
     private Manager manager;
     @JsonIgnore
