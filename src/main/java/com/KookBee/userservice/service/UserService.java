@@ -3,11 +3,11 @@ package com.KookBee.userservice.service;
 import com.KookBee.userservice.domain.dto.ManagerDTO;
 import com.KookBee.userservice.domain.dto.UserDTO;
 import com.KookBee.userservice.domain.entity.*;
+import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
 import com.KookBee.userservice.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
@@ -145,5 +145,11 @@ public class UserService {
         Optional<Users> findById = userRepository.findById(teacherId);
         Users users = findById.orElseThrow(NullPointerException::new);
         return users;
+    }
+
+    public EUserType getUserType() {
+        Long userId = jwtService.tokenToDTO(jwtService.getAccessToken()).getId();
+        Users byId = userRepository.findById(userId).get();
+        return byId.getUserType();
     }
 }
