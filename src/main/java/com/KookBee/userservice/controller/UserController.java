@@ -1,6 +1,7 @@
 package com.KookBee.userservice.controller;
 
 
+import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
 import com.KookBee.userservice.domain.entity.Users;
@@ -30,6 +31,11 @@ public class UserController {
     @GetMapping("/{userId}")
     public Users getUserById(@PathVariable("userId") Long userId){
         return userService.getUser(userId);
+    }
+
+    @GetMapping("/usertype")
+    public EUserType getUserType(){
+        return userService.getUserType();
     }
 
 }
