@@ -6,6 +6,7 @@ import com.KookBee.userservice.domain.entity.*;
 import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
+import com.KookBee.userservice.domain.response.UserResponse;
 import com.KookBee.userservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -102,7 +103,7 @@ public class UserService {
             // 토큰 생성
             String accessToken = jwtService.createAccessToken(users.getId());
             String refreshToken = jwtService.createRefreshToken(users.getId());
-            return new UserLoginResponse(users.getId(), accessToken, refreshToken);
+            return new UserLoginResponse(users.getId(), users.getUserName(), accessToken, refreshToken);
         }
         return null;
     }
@@ -151,5 +152,10 @@ public class UserService {
         Long userId = jwtService.tokenToDTO(jwtService.getAccessToken()).getId();
         Users byId = userRepository.findById(userId).get();
         return byId.getUserType();
+    }
+
+    public UserResponse getMe(){
+        Long userId = jwtService.tokenToDTO(jwtService.getAccessToken()).getId();
+        return new UserResponse(userRepository.findById(userId).get());
     }
 }
