@@ -95,8 +95,8 @@ public class UserService {
     };
     private final JwtService jwtService;
     public UserLoginResponse login(UserLoginRequest request) {
-        Optional<Users> findByLogin = userRepository.findByUserEmail(request.getUserEmail());
-        Users users = findByLogin.orElseThrow(LoginException::new);
+        Optional<Users> findByEmail = userRepository.findByUserEmail(request.getUserEmail());
+        Users users = findByEmail.orElseThrow(LoginException::new);
         String salt = users.getSaltCode();
         String encoded = encrypt.getEncrypt(request.getUserPw(), salt);
         if(encoded.equals(users.getUserPw())) {
@@ -105,7 +105,7 @@ public class UserService {
             String refreshToken = jwtService.createRefreshToken(users.getId());
             return new UserLoginResponse(users.getId(), users.getUserName(), accessToken, refreshToken);
         }
-        return null;
+        throw new LoginException();
     }
 
     public String studentSignUpService(Users users) throws EmailCheckException {
