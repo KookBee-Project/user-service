@@ -1,9 +1,11 @@
 package com.KookBee.userservice.controller;
 
 
+import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
 import com.KookBee.userservice.domain.entity.Users;
+import com.KookBee.userservice.domain.response.UserResponse;
 import com.KookBee.userservice.exception.EmailCheckException;
 import com.KookBee.userservice.security.JwtService;
 import com.KookBee.userservice.service.UserService;
@@ -32,4 +34,13 @@ public class UserController {
         return userService.getUser(userId);
     }
 
+    @GetMapping("/usertype")
+    public EUserType getUserType(){
+        return userService.getUserType();
+    }
+
+    @GetMapping
+    public UserResponse getMe(){
+        return userService.getMe();
+    }
 }
