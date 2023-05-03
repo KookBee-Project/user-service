@@ -3,10 +3,12 @@ package com.KookBee.userservice.controller;
 
 import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
+import com.KookBee.userservice.domain.response.PortPolioStudyFindUserResponse;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
 import com.KookBee.userservice.domain.entity.Users;
 import com.KookBee.userservice.domain.response.UserResponse;
 import com.KookBee.userservice.exception.EmailCheckException;
+import com.KookBee.userservice.exception.NotFoundUserByEmailException;
 import com.KookBee.userservice.security.JwtService;
 import com.KookBee.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +44,10 @@ public class UserController {
     @GetMapping
     public UserResponse getMe(){
         return userService.getMe();
+    }
+
+    @PostMapping("/portpolio/study/finduser")
+    public PortPolioStudyFindUserResponse postFindUser(@RequestBody String userEmail) throws NotFoundUserByEmailException {
+        return userService.findUserByEmail(userEmail);
     }
 }
