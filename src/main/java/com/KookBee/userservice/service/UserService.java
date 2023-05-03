@@ -6,7 +6,9 @@ import com.KookBee.userservice.domain.entity.*;
 import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
+import com.KookBee.userservice.domain.response.PortPolioStudyFindUserResponse;
 import com.KookBee.userservice.domain.response.UserResponse;
+import com.KookBee.userservice.exception.NotFoundUserByEmailException;
 import com.KookBee.userservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -157,5 +159,11 @@ public class UserService {
     public UserResponse getMe(){
         Long userId = jwtService.tokenToDTO(jwtService.getAccessToken()).getId();
         return new UserResponse(userRepository.findById(userId).get());
+    }
+
+    public PortPolioStudyFindUserResponse findUserByEmail(String userEmail) throws NotFoundUserByEmailException {
+        Optional<Users> byUserEmail = userRepository.findByUserEmail(userEmail);
+        return new PortPolioStudyFindUserResponse(
+                byUserEmail.orElseThrow(NotFoundUserByEmailException::new));
     }
 }
