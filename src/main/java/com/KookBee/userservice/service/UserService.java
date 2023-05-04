@@ -6,6 +6,7 @@ import com.KookBee.userservice.domain.entity.*;
 import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
 import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
+import com.KookBee.userservice.domain.request.UserEmailRequest;
 import com.KookBee.userservice.domain.response.PortPolioStudyFindUserResponse;
 import com.KookBee.userservice.domain.response.UserResponse;
 import com.KookBee.userservice.exception.NotFoundUserByEmailException;
@@ -161,7 +162,8 @@ public class UserService {
         return new UserResponse(userRepository.findById(userId).get());
     }
 
-    public PortPolioStudyFindUserResponse findUserByEmail(String userEmail) throws NotFoundUserByEmailException {
+    public PortPolioStudyFindUserResponse findUserByEmail(UserEmailRequest request) throws NotFoundUserByEmailException {
+        String userEmail = request.userEmail;
         Optional<Users> byUserEmail = userRepository.findByUserEmail(userEmail);
         return new PortPolioStudyFindUserResponse(
                 byUserEmail.orElseThrow(NotFoundUserByEmailException::new));

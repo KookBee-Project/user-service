@@ -2,6 +2,7 @@ package com.KookBee.userservice.controller;
 
 
 import com.KookBee.userservice.domain.enums.EUserType;
+import com.KookBee.userservice.domain.request.UserEmailRequest;
 import com.KookBee.userservice.domain.request.UserLoginRequest;
 import com.KookBee.userservice.domain.response.PortPolioStudyFindUserResponse;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
@@ -46,8 +47,8 @@ public class UserController {
         return userService.getMe();
     }
 
-    @PostMapping("/portpolio/study/finduser")
-    public PortPolioStudyFindUserResponse postFindUser(@RequestBody String userEmail) throws NotFoundUserByEmailException {
-        return userService.findUserByEmail(userEmail);
+    @PostMapping("/portfolio/study/finduser")
+    public PortPolioStudyFindUserResponse postFindUser(@RequestBody UserEmailRequest request) throws NotFoundUserByEmailException {
+        return userService.findUserByEmail(request);
     }
 }
