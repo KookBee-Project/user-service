@@ -160,7 +160,11 @@ public class UserService {
 
     public UserResponse getMe(){
         Long userId = jwtService.tokenToDTO(jwtService.getAccessToken()).getId();
-        return new UserResponse(userRepository.findById(userId).get());
+        Users users = userRepository.findById(userId).get();
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserId(userId);
+        userResponse.setUserName(users.getUserName());
+        return userResponse;
     }
 
     public PortPolioStudyFindUserResponse findUserByEmail(UserEmailRequest request) throws NotFoundUserByEmailException {

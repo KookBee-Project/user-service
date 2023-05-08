@@ -10,9 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter @Setter
 public class UserResponse {
+    private Long userId;
     private String userName;
 
     public UserResponse(Users users) {
+        this.userId = users.getId();
         this.userName = users.getUserName();
     }
 }
