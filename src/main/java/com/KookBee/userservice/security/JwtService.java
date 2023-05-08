@@ -67,11 +67,9 @@ public class JwtService {
                 .setHeaderParam("type","jwt")
                 .claim("userId",userId)
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*30))) // 만료기간은 30분으로 설정
+                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 30))) // 만료기간은 30분으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-//        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-//        setAccessTokenInHttpOnlyCookie(response, accessToken);
         return accessToken;
     }
 
@@ -83,7 +81,7 @@ public class JwtService {
         String jwtToken =  Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+2*(1000*60*60))) // 만료기간은 1시간으로 설정
+                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 60))) // 만료기간은 1시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         RefreshToken refreshToken = new RefreshToken(jwtToken, userIdx);
