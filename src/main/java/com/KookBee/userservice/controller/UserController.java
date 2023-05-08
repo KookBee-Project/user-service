@@ -14,7 +14,11 @@ import com.KookBee.userservice.security.JwtService;
 import com.KookBee.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -50,5 +54,10 @@ public class UserController {
     @PostMapping("/portfolio/study/finduser")
     public PortPolioStudyFindUserResponse postFindUser(@RequestBody UserEmailRequest request) throws NotFoundUserByEmailException {
         return userService.findUserByEmail(request);
+    }
+    // id리스트를 받아서 이름 리스트를 반환해주는 기능입니다.
+    @PostMapping("/namelist")
+    public List<UserResponse> getUserNameList(@RequestBody List<Long> userIds){
+        return userService.getUserNameList(userIds);
     }
 }

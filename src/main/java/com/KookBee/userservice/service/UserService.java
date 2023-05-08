@@ -22,6 +22,7 @@ import com.KookBee.userservice.exception.EmailCheckException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -167,5 +168,13 @@ public class UserService {
         Optional<Users> byUserEmail = userRepository.findByUserEmail(userEmail);
         return new PortPolioStudyFindUserResponse(
                 byUserEmail.orElseThrow(NotFoundUserByEmailException::new));
+    }
+
+    public List<UserResponse> getUserNameList(List<Long> userIds){
+        List<UserResponse> responses = userIds.stream().map(el->{
+            Optional<Users> byId = userRepository.findById(el);
+            return new UserResponse(byId.orElse(null));
+        }).toList();
+        return responses;
     }
 }
