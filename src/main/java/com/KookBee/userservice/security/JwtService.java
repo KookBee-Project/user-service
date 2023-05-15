@@ -81,7 +81,7 @@ public class JwtService {
         String jwtToken =  Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 60))) // 만료기간은 1시간으로 설정
+                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 3600 * 24 * 7))) // 만료기간은 1시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         RefreshToken refreshToken = new RefreshToken(jwtToken, userIdx);
@@ -127,7 +127,7 @@ public class JwtService {
 
     }
     public boolean isValidAccessToken(String accessToken){
-        if(accessToken.isEmpty()) return false;
+        if(accessToken == null) return false;
         // Access Token이 유효하지 않으면
         // is access token is not valid
         if(tokenToDTO(accessToken) == null) return false;
@@ -136,15 +136,19 @@ public class JwtService {
     }
 
     private boolean isValidRefreshToken(String refreshToken) {
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-        Optional<RefreshToken> redisToken =  refreshTokenRepository.findById(refreshToken);
-        if(redisToken.isPresent()) {
-            // Refresh Token이 있다면 새로운 Access Token을 생성하여 HTTPOnly 쿠키에 설정하고 반환한다
-            // if refresh token exists create new access token and set pm HTTPOnly cookie
-            refreshAccessToken(response, redisToken.get());
-            return true;
+        try {
+            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+            Optional<RefreshToken> redisToken = refreshTokenRepository.findById(refreshToken);
+            if(redisToken.isPresent()) {
+                // Refresh Token이 있다면 새로운 Access Token을 생성하여 HTTPOnly 쿠키에 설정하고 반환한다
+                // if refresh token exists create new access token and set pm HTTPOnly cookie
+                refreshAccessToken(response, redisToken.get());
+                return true;
+            }
+            return false;
+        } catch (Exception e){
+            return false;
         }
-        return false;
     }
 
     private void refreshAccessToken(HttpServletResponse response, RefreshToken redisToken) {
