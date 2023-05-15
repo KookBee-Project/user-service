@@ -3,6 +3,7 @@ package com.KookBee.userservice.domain.entity;
 import com.KookBee.userservice.domain.enums.EStatus;
 import com.KookBee.userservice.domain.enums.EUserType;
 import com.KookBee.userservice.domain.dto.UserDTO;
+import com.KookBee.userservice.domain.request.UserChangeInfoRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,4 +49,12 @@ public class    Users {
     public Users(Long userId) {
         this.id = userId;
     }
+
+    public Users updateUserInfo(UserChangeInfoRequest request){
+        this.id = request.getUserId();
+        this.userPw = request.getUserPw();
+        this.userPhoneNumber = request.getUserPhoneNumber();
+        return this;
+    }
+
 }
