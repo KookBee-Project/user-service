@@ -4,13 +4,14 @@ import com.KookBee.userservice.domain.dto.ManagerDTO;
 import com.KookBee.userservice.domain.dto.UserDTO;
 import com.KookBee.userservice.domain.entity.*;
 import com.KookBee.userservice.domain.enums.EUserType;
-import com.KookBee.userservice.domain.request.ManagerSignUpRequest;
-import com.KookBee.userservice.domain.request.TeacherSignUpRequest;
+import com.KookBee.userservice.domain.request.*;
+import com.KookBee.userservice.domain.response.PortPolioStudyFindUserResponse;
 import com.KookBee.userservice.domain.response.UserResponse;
+import com.KookBee.userservice.exception.NotFoundUserByEmailException;
+import com.KookBee.userservice.exception.TokenExpirationException;
 import com.KookBee.userservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.KookBee.userservice.domain.request.UserLoginRequest;
 import com.KookBee.userservice.domain.response.UserLoginResponse;
 import com.KookBee.userservice.exception.LoginException;
 import com.KookBee.userservice.security.JwtService;
@@ -19,6 +20,7 @@ import com.KookBee.userservice.exception.EmailCheckException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -154,8 +156,34 @@ public class UserService {
         return byId.getUserType();
     }
 
-    public UserResponse getMe(){
+    public UserResponse getMe() throws TokenExpirationException {
         Long userId = jwtService.tokenToDTO(jwtService.getAccessToken()).getId();
-        return new UserResponse(userRepository.findById(userId).get());
+        Users users = userRepository.findById(userId).orElseThrow(TokenExpirationException::new);
+        UserResponse userResponse = new UserResponse(users);
+        return userResponse;
+    }
+
+    public PortPolioStudyFindUserResponse findUserByEmail(UserEmailRequest request) throws NotFoundUserByEmailException {
+        String userEmail = request.userEmail;
+        Optional<Users> byUserEmail = userRepository.findByUserEmail(userEmail);
+        return new PortPolioStudyFindUserResponse(
+                byUserEmail.orElseThrow(NotFoundUserByEmailException::new));
+    }
+
+    public List<UserResponse> getUserNameList(List<Long> userIds){
+        List<UserResponse> responses = userIds.stream().map(el->{
+            Optional<Users> byId = userRepository.findById(el);
+            return new UserResponse(byId.orElse(null));
+        }).toList();
+        return responses;
+    }
+
+    public void putUserInfo(UserChangeInfoRequest request){
+        Users users = userRepository.findById(request.getUserId()).get();
+        String encoded = encrypt.getEncrypt(request.getUserPw(), users.getSaltCode());
+        // salt와 암호화된 비밀번호를 users에 저장
+        request.setUserPw(encoded);
+        users.updateUserInfo(request);
+        userRepository.save(users);
     }
 }
