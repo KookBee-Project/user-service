@@ -3,7 +3,7 @@ package com.KookBee.userservice.domain.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-@RedisHash(value = "refreshToken", timeToLive = 3600)
+@RedisHash(value = "refreshToken", timeToLive = 604800)
 public class RefreshToken {
     @Id
     private String refreshToken;
