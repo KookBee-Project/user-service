@@ -17,20 +17,4 @@ public class UserServiceApplication {
 		SpringApplication.run(UserServiceApplication.class, args);
 
 	}
-	// cors 해결법-----------
-	@Bean
-	public WebMvcConfigurer corsConfigure(){
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-						.allowCredentials(true)
-						.allowedHeaders("*")
-						.allowedMethods("*")
-						.allowedOrigins("http://localhost:3000","http://localhost:3001");
-			}
-		};
-	}
-	//----------------------------
-
 }
