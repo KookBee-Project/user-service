@@ -81,7 +81,7 @@ public class JwtService {
         String jwtToken =  Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 3600 * 24 * 7))) // 만료기간은 1시간으로 설정
+                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 3600 * 24 * 7))) // 만료기간은 1주일로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         RefreshToken refreshToken = new RefreshToken(jwtToken, userIdx);
@@ -114,14 +114,14 @@ public class JwtService {
             return null;
         }
     }
-    public boolean isValidTokens(){ //엑세스 토큰과 리프레쉬 토큰의 유효성을 둘다 검사한다
+    public String isValidTokens(){ //엑세스 토큰과 리프레쉬 토큰의 유효성을 둘다 검사한다
         //check both refresh AND access token
         String accessToken = getAccessToken();
         String refreshToken = getRefreshToken();
         if(!isValidAccessToken(accessToken)){
             return isValidRefreshToken(refreshToken);
         }
-        return true;
+        return "OK";
 
 
 
@@ -135,27 +135,26 @@ public class JwtService {
         return true;
     }
 
-    private boolean isValidRefreshToken(String refreshToken) {
+    private String isValidRefreshToken(String refreshToken) {
         try {
             HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
             Optional<RefreshToken> redisToken = refreshTokenRepository.findById(refreshToken);
             if(redisToken.isPresent()) {
                 // Refresh Token이 있다면 새로운 Access Token을 생성하여 HTTPOnly 쿠키에 설정하고 반환한다
                 // if refresh token exists create new access token and set pm HTTPOnly cookie
-                refreshAccessToken(response, redisToken.get());
-                return true;
+                return refreshAccessToken(response, redisToken.get());
             }
-            return false;
+            return null;
         } catch (Exception e){
-            return false;
+            return null;
         }
     }
 
-    private void refreshAccessToken(HttpServletResponse response, RefreshToken redisToken) {
+    private String refreshAccessToken(HttpServletResponse response, RefreshToken redisToken) {
         //새로운 엑세스 토큰 생성
         // create new access token
         String newAccessToken = createAccessToken(redisToken.getUserIdx());
-        response.addHeader("accessToken", newAccessToken);
-
+//        response.addHeader("accessToken", newAccessToken);
+        return newAccessToken;
     }
 }

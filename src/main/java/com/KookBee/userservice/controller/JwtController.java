@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class JwtController {
     private final JwtService jwtService;
     @GetMapping
-    public ResponseEntity jwtCheck(){
-        if(jwtService.isValidTokens()) return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<String> jwtCheck(){
+        String check = jwtService.isValidTokens();
+        if(check != null) return new ResponseEntity<>(check, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }

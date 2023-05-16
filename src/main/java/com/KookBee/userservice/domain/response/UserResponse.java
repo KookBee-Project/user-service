@@ -15,6 +15,7 @@ public class UserResponse {
     private String userName;
     private String userBirth;
     private String userPhoneNumber;
+    private String userType;
 
     public UserResponse(Users users) {
         this.userId = users.getId();
@@ -22,5 +23,6 @@ public class UserResponse {
         this.userName = users.getUserName();
         this.userBirth = users.getUserBirth();
         this.userPhoneNumber = users.getUserPhoneNumber();
+        this.userType = String.valueOf(users.getUserType());
     }
 }
